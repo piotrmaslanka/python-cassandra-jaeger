@@ -6,7 +6,7 @@ from satella.cassandra import wrap_future
 from satella.coding.structures import Proxy
 from satella.opentracing import trace_future
 
-__version__ = '0.1a8'
+__version__ = '0.1a9'
 
 
 def _query_to_string(query, arguments):
@@ -31,7 +31,7 @@ class SessionTracer(Proxy):
     __slots__ = 'session', 'tracer'
 
     def __init__(self, session: Session, tracer: Tracer):
-        super(session)
+        super().__init__(session)
         self.session = session
         self.tracer = tracer
 
