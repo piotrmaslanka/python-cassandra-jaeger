@@ -35,3 +35,12 @@ This will automatically execute tracing when your span is being traced.
 
 
 For tracing cassandra-driver using smok-serwis/cassandra-jaeger-tracing
+
+# History
+
+v0.3:
+
+* _TBA_
+
+v0.2: improved reporting when arguments is a dict
+

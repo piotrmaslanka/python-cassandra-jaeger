@@ -6,11 +6,14 @@ from satella.cassandra import wrap_future
 from satella.coding.structures import Proxy
 from satella.opentracing import trace_future
 
-__version__ = '0.2a1'
+__version__ = '0.3a1'
 
 
 def _query_to_string(query, arguments):
-    args_str = ', '.join(map(str, arguments))
+    if isinstance(arguments, dict):
+        args_str = str(arguments)
+    else:
+        args_str = ', '.join(map(str, arguments))
 
     if len(args_str) > 100:
         args_str = f'{args_str[:100]}...'
