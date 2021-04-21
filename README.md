@@ -13,6 +13,21 @@ When I'm using the following technologies:
 
 And you want to attach your traces to Cassandra's requests.
 
+**Note: so far only Jaeger tracing is supported. I mean,** 
+**theoretically every opentracing-compatible framework** 
+**is supported, but only Jaeger's tracing enables to select**
+**which query to trace or not.**
+
+**In case that you're not using Jaeger, every single query will be**
+**sent with a tracing request, which may negatively impact your**
+**performance, Cassandra-wise.**
+
+If you have an issue with that, please file an 
+[issue](https://github.com/piotrmaslanka/python-cassandra-jaeger/issues)
+with a description of what it is that you're using for tracing.
+
+A relevant warning will be shown as well.
+
 ## Usage
 
 Just do the following:
@@ -38,9 +53,11 @@ For tracing cassandra-driver using smok-serwis/cassandra-jaeger-tracing
 
 # History
 
-v0.3:
+## v0.3
 
-* _TBA_
+* a warning will be shown with unsupported tracing mechanism
 
-v0.2: improved reporting when arguments is a dict
+## v0.2
+ 
+* improved reporting when arguments is a dict
 

@@ -1,3 +1,5 @@
+import warnings
+
 from cassandra.cluster import Session
 from cassandra.query import SimpleStatement
 from opentracing import Tracer, Format, tags
@@ -6,7 +8,7 @@ from satella.cassandra import wrap_future
 from satella.coding.structures import Proxy
 from satella.opentracing import trace_future
 
-__version__ = '0.3a1'
+__version__ = '0.3a2'
 
 
 def _query_to_string(query, arguments):
@@ -45,9 +47,14 @@ class SessionTracer(Proxy):
         span = self.tracer.active_span      #: type: Span
         if span is not None:
             try:
-                is_sampled = span.is_sampled()
+                is_sampled = span.is_sampled()   # jaeger-client's spans have this property
             except AttributeError:
-                is_sampled = True
+                warnings.warn('Unsupported tracing mechanism. Please file an issue at '
+                              'https://github.com/piotrmaslanka/python-cassandra-jaeger/issues '
+                              'with a description of what you are using for tracing.'
+                              'Every Cassandra request will be assumed to have been traced, '
+                              'which may negatively impact your performance', RuntimeWarning)
+                is_sampled = True       # if you are using some other tracing mechanism
         else:
             is_sampled = False
 
