@@ -60,6 +60,10 @@ tracing for the request.
 
 # History
 
+## v0.4
+
+* _TBA_
+
 ## v0.3
 
 * a warning will be shown with unsupported tracing mechanism
