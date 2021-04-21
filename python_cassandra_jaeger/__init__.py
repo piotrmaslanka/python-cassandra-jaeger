@@ -45,6 +45,7 @@ class SessionTracer(Proxy):
 
     def execute_async(self, query, arguments=None, *args, **kwargs):
         span = self.tracer.active_span      #: type: Span
+        is_sampled = False
         if span is not None:
             try:
                 is_sampled = span.is_sampled()   # jaeger-client's spans have this property
@@ -55,8 +56,6 @@ class SessionTracer(Proxy):
                               'Every Cassandra request will be assumed to have been traced, '
                               'which may negatively impact your performance', RuntimeWarning)
                 is_sampled = True       # if you are using some other tracing mechanism
-        else:
-            is_sampled = False
 
         if is_sampled:
             query_str, args_str = _query_to_string(query, arguments)
