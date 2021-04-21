@@ -8,7 +8,7 @@ from satella.cassandra import wrap_future
 from satella.coding.structures import Proxy
 from satella.opentracing import trace_future
 
-__version__ = '0.3a2'
+__version__ = '0.3'
 
 
 def _query_to_string(query, arguments):
