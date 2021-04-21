@@ -3,7 +3,6 @@
 [![PyPI version](https://badge.fury.io/py/python-cassandra-jaeger.svg)](https://badge.fury.io/py/python-cassandra-jaeger)
 [![PyPI](https://img.shields.io/pypi/implementation/python-cassandra-jaeger.svg)](https://pypi.python.org/pypi/python-cassandra-jaeger)
 
-
 ## When do I use it?
 
 When I'm using the following technologies:
@@ -48,8 +47,16 @@ st.execute('SELECT * FROM table')
 And you keep on utilizing `st` instead of `s`.
 This will automatically execute tracing when your span is being traced.
 
+Just remember to match your tracing key with
+Cassandra's `JAEGER_TRACE_KEY`.
 
-For tracing cassandra-driver using smok-serwis/cassandra-jaeger-tracing
+## What does it do?
+
+It hijacks `session.execute`, grabs the current span,
+determines if sampling is active for this span (currently
+works only with Jaeger) and if it is so, starts a new 
+child span, attaches it's ID to custom_payload and enables
+tracing for the request.
 
 # History
 
