@@ -58,11 +58,24 @@ works only with Jaeger) and if it is so, starts a new
 child span, attaches it's ID to custom_payload and enables
 tracing for the request.
 
+# Additionally metricizing your queries
+
+*Added in v0.4*: 
+You can also metrify how long did your queries take to execute, say:
+
+```python
+from satella.instrumentation.metrics import getMetric
+
+met_sum = getMetric('cassandra.query.time.summary', 'summary')
+s = c.connect('keyspace')
+st = SessionTracer(s, tracer, metric=met_sum)
+```
+
 # History
 
 ## v0.4
 
-* _TBA_
+* added an option to metricize the queries
 
 ## v0.3
 

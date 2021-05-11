@@ -1,3 +1,4 @@
+import typing as tp
 import warnings
 
 from cassandra.cluster import Session
@@ -6,9 +7,10 @@ from opentracing import Tracer, Format, tags
 from satella.cassandra import wrap_future
 
 from satella.coding.structures import Proxy
+from satella.instrumentation.metrics.metric_types.measurable_mixin import MeasurableMixin
 from satella.opentracing import trace_future
 
-__version__ = '0.4a1'
+__version__ = '0.4a3'
 
 
 def _query_to_string(query, arguments):
@@ -33,12 +35,14 @@ def _query_to_string(query, arguments):
 
 
 class SessionTracer(Proxy):
-    __slots__ = 'session', 'tracer'
+    __slots__ = 'session', 'tracer', 'metric'
 
-    def __init__(self, session: Session, tracer: Tracer):
+    def __init__(self, session: Session, tracer: Tracer,
+                 metric: tp.Optional[MeasurableMixin] = None):
         super().__init__(session)
         self.session = session
         self.tracer = tracer
+        self.metric = metric
 
     def execute(self, query, arguments=None, *args, **kwargs):
         return self.execute_async(query, arguments, *args, **kwargs).result()
@@ -77,6 +81,12 @@ class SessionTracer(Proxy):
                           custom_payload=custom_payload)
 
         cass_fut = self.session.execute_async(query, arguments, *args, **kwargs)
-        if is_sampled:
-            trace_future(wrap_future(cass_fut), span)
+
+        if is_sampled or self.metric:
+            fut = wrap_future(cass_fut)
+            if is_sampled:
+                trace_future(fut, span)
+
+            if self.metric:
+                self.metric.measure_future(fut)
         return cass_fut
