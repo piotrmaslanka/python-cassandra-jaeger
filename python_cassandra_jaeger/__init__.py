@@ -11,7 +11,7 @@ from satella.coding.structures import Proxy
 from satella.instrumentation.metrics.metric_types.measurable_mixin import MeasurableMixin
 from satella.opentracing import trace_future
 
-__version__ = '0.4a4'
+__version__ = '0.4'
 
 
 def _query_to_string(query, arguments):
