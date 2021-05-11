@@ -12,12 +12,12 @@ When I'm using the following technologies:
 
 And you want to attach your traces to Cassandra's requests.
 
-**Note: so far only Jaeger tracing is supported. I mean,** 
+**Note: so far only Jaeger tracing and MockTracer are supported. I mean,** 
 **theoretically every opentracing-compatible framework** 
 **is supported, but only Jaeger's tracing enables to select**
 **which query to trace or not.**
 
-**In case that you're not using Jaeger, every single query will be**
+**In case that you're not using Jaeger or MockTracer, every single query will be**
 **sent with a tracing request, which may negatively impact your**
 **performance, Cassandra-wise.**
 
@@ -76,6 +76,7 @@ st = SessionTracer(s, tracer, metric=met_sum)
 ## v0.4
 
 * added an option to metricize the queries
+* added support for MockTracker
 
 ## v0.3
 

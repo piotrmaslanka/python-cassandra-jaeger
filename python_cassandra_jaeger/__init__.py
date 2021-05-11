@@ -4,13 +4,14 @@ import warnings
 from cassandra.cluster import Session
 from cassandra.query import SimpleStatement
 from opentracing import Tracer, Format, tags
+from opentracing.mocktracer import MockTracer
 from satella.cassandra import wrap_future
 
 from satella.coding.structures import Proxy
 from satella.instrumentation.metrics.metric_types.measurable_mixin import MeasurableMixin
 from satella.opentracing import trace_future
 
-__version__ = '0.4a3'
+__version__ = '0.4a4'
 
 
 def _query_to_string(query, arguments):
@@ -48,18 +49,21 @@ class SessionTracer(Proxy):
         return self.execute_async(query, arguments, *args, **kwargs).result()
 
     def execute_async(self, query, arguments=None, *args, **kwargs):
-        span = self.tracer.active_span      #: type: Span
-        is_sampled = False
-        if span is not None:
-            try:
-                is_sampled = span.is_sampled()   # jaeger-client's spans have this property
-            except AttributeError:
-                warnings.warn('Unsupported tracing mechanism. Please file an issue at '
-                              'https://github.com/piotrmaslanka/python-cassandra-jaeger/issues '
-                              'with a description of what you are using for tracing.'
-                              'Every Cassandra request will be assumed to have been traced, '
-                              'which may negatively impact your performance', RuntimeWarning)
-                is_sampled = True       # if you are using some other tracing mechanism
+        if isinstance(self.tracer, MockTracer):
+            is_sampled = False
+        else:
+            span = self.tracer.active_span      #: type: Span
+            is_sampled = False
+            if span is not None:
+                try:
+                    is_sampled = span.is_sampled()   # jaeger-client's spans have this property
+                except AttributeError:
+                    warnings.warn('Unsupported tracing mechanism. Please file an issue at '
+                                  'https://github.com/piotrmaslanka/python-cassandra-jaeger/issues '
+                                  'with a description of what you are using for tracing.'
+                                  'Every Cassandra request will be assumed to have been traced, '
+                                  'which may negatively impact your performance', RuntimeWarning)
+                    is_sampled = True       # if you are using some other tracing mechanism
 
         if is_sampled:
             query_str, args_str = _query_to_string(query, arguments)
