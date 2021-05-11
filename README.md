@@ -73,6 +73,10 @@ st = SessionTracer(s, tracer, metric=met_sum)
 
 # History
 
+## v0.5
+
+* _TBA_
+
 ## v0.4
 
 * added an option to metricize the queries
